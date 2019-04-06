@@ -1,24 +1,36 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios'
+import Char from './Char'
+
+const instance = axios.create({
+  baseURL: 'https://swapi.co/api',
+  timeout: 1000
+});
 
 class App extends Component {
+  state = {
+    characters : []
+  }
+
+  async componentDidMount(){
+    // const rawInfo = await instance.get("https://swapi.co/api/people/")
+    const info = await instance.get("/people/")
+    // const info = await rawInfo.json()
+    this.setState({
+      characters: info.data.results
+    })
+  }
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          {this.state.characters.map((char, key) =>{
+            return(
+              <Char name = {char.name} key= {key} col={char.eye_color}/>
+            )
+          })}
         </header>
       </div>
     );
